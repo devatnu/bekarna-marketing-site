@@ -1,6 +1,10 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 
+/** Required by `output: "export"` — emits sitemap.xml as a file at build time
+ * rather than as a route handler. */
+export const dynamic = "force-static";
+
 /**
  * sitemap.xml — generated at build time (no request-time APIs, so Next caches
  * it statically). Only canonical, indexable URLs belong here: listing a

@@ -10,9 +10,56 @@ No giving flows, no passbook, no auth, no database. Content lives in
 
 ```bash
 npm run dev     # http://localhost:3000
-npm run build   # every route must report ○ (Static)
+npm run build   # every route must report ○ (Static); writes out/
 npm run lint
+
+npx serve out   # preview the exact files that get deployed
 ```
+
+---
+
+## Hosting
+
+`next.config.ts` sets `output: "export"`, so `npm run build` produces **`out/` —
+plain static files, no Node server anywhere**. This is deliberate: a CDN has
+nothing to wake up, so the cold-start delay that affects container hosts cannot
+happen here by construction.
+
+**Deploy target: Cloudflare Pages.** Build command `npm run build`, output
+directory `out`. Set `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_APP_URL` as build
+env vars.
+
+Chosen because the DNS for these domains is already on Cloudflare (no new vendor,
+custom domain is a click), its free tier permits commercial use with unlimited
+bandwidth, it has more Indian PoPs than the alternatives — which matters for the
+Core Web Vitals that feed ranking — and it honours the `_headers` file below.
+
+**Do not host this on a container platform** (Railway, Render, Fly). You'd pay for
+an always-on server to hand over 1.8 MB of static files, and reintroduce exactly
+the cold-start problem this setup avoids.
+
+### `public/_headers` is load-bearing
+
+Next's static export writes the OG card as an **extensionless** file called
+`opengraph-image`. A static host has nothing to infer a MIME type from, serves it
+as `application/octet-stream`, and WhatsApp, X and LinkedIn then refuse to render
+the preview — silently, with no error anywhere. `public/_headers` declares
+`Content-Type: image/png` for it, and also sets immutable caching for hashed
+assets plus the security headers.
+
+That file uses Cloudflare Pages / Netlify syntax. **On any other host you must
+re-express those rules** in whatever form it accepts, or social previews break.
+
+### What `output: "export"` gives up
+
+No middleware, no route handlers, no ISR/on-demand revalidation, and no
+`next/image` optimisation (hence `images: { unoptimized: true }`). None of it is
+used or wanted here. If a genuinely dynamic route ever becomes necessary, remove
+`output` and move to a host that runs the Next server.
+
+Two build-time exports exist only to satisfy `output: "export"` —
+`export const dynamic = "force-static"` in `sitemap.ts`, `robots.ts` and
+`opengraph-image.tsx`. Without them the build fails outright.
 
 ---
 

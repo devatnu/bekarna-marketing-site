@@ -16,6 +16,10 @@ export const alt =
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+/** Required by `output: "export"` — bakes the PNG at build time instead of
+ * serving it from a route handler. Nothing here is request-dependent anyway. */
+export const dynamic = "force-static";
+
 const GREEN = "#58A870";
 
 /** Brand fonts. satori reads ttf/otf/woff only — never woff2. */

@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 
+/** Required by `output: "export"` — emits robots.txt as a file at build time. */
+export const dynamic = "force-static";
+
 /**
  * robots.txt — everything is crawlable; this is a brochure site with no private
  * routes. `host` names the canonical domain, which matters here because
