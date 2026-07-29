@@ -1,26 +1,217 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ─────────────────────────────────────────────────────────────────────────────
+   Be Karna design tokens — mirrors the product app so bekarna.in and
+   bekarna.app read as one brand. Green is used sparingly ("green as spice").
+   ───────────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* Type — loaded by next/font in layout.tsx (self-hosted, no layout shift). */
+  --font-display: var(--font-bricolage), Georgia, serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+
+  --color-base: #fafaf7;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #f2f1ec;
+  --color-ink: #2b312d;
+  --color-ink-soft: #4a524c;
+  --color-muted: #6b6b66;
+  --color-faint: #9a9a94;
+  --color-border: #e4e3dd;
+  --color-green: #58a870;
+  --color-accent: #3fae7e;
+  --color-accent-deep: #0a2a1e;
+  --color-mint: #dcf2e7;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* Minimum comfortable tap target. */
+  --tap-min: 48px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background: var(--color-base);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Visible keyboard focus everywhere — never remove the ring, only restyle it. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Touch-first: no hover-only affordances, and no tap flash. */
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Type tokens ─────────────────────────────────────────────────────────── */
+
+@layer components {
+  .t-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 8.5vw, 3.5rem);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+  }
+
+  .t-h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 7vw, 2.75rem);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+  }
+
+  .t-h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.375rem, 5.5vw, 2rem);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+
+  .t-h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.125rem;
+    line-height: 1.3;
+  }
+
+  .t-body {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .t-body-lg {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: clamp(1.0625rem, 2.6vw, 1.1875rem);
+    line-height: 1.6;
+  }
+
+  .t-caption {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+
+  .t-label {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+}
+
+/* ── Motion ──────────────────────────────────────────────────────────────────
+   Native cross-document view transitions give the brief's horizontal page slide
+   with zero JavaScript, so nothing competes with first paint. Browsers without
+   support simply cut, which is a fine fallback.
+   ────────────────────────────────────────────────────────────────────────────── */
+
+@view-transition {
+  navigation: auto;
+}
+
+@keyframes karna-slide-from-right {
+  from {
+    transform: translateX(18px);
+    opacity: 0;
+  }
+}
+
+@keyframes karna-slide-to-left {
+  to {
+    transform: translateX(-18px);
+    opacity: 0;
+  }
+}
+
+::view-transition-old(root) {
+  animation: karna-slide-to-left 200ms ease-in both;
+}
+
+::view-transition-new(root) {
+  animation: karna-slide-from-right 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Logo marquee. Pure CSS: the track holds the list twice and slides exactly
+   -50%, so the loop is seamless. Pauses while pressed (press, not hover). */
+@keyframes karna-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.karna-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: karna-marquee var(--marquee-duration, 42s) linear infinite;
+}
+
+.karna-marquee:active .karna-marquee-track,
+.karna-marquee:focus-within .karna-marquee-track {
+  animation-play-state: paused;
+}
+
+/* Gentle rise for sections as the page settles. Transform/opacity only, so it
+   can never shift layout (CLS stays at zero). */
+@keyframes karna-rise {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+
+.karna-rise {
+  animation: karna-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Kill every decorative animation, including the marquee's endless scroll. */
+  *,
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .karna-marquee-track {
+    animation: none;
+  }
+
+  /* Without the auto-scroll, let the list be reachable by swipe instead. */
+  .karna-marquee {
+    overflow-x: auto;
+  }
 }

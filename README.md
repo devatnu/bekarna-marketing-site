@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Be Karna — marketing site (bekarna.in)
 
-## Getting Started
+A static, SEO-first brochure site for Be Karna. Its only jobs: explain what Be
+Karna is, build credibility, and send people to the product at **bekarna.app**.
 
-First, run the development server:
+No giving flows, no passbook, no auth, no database. Content lives in
+`src/data/partners.ts`.
+
+**Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev     # http://localhost:3000
+npm run build   # every route must report ○ (Static)
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Before this goes live
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+These are placeholders. Shipping them as-is would put unverifiable claims on a
+site whose entire pitch is verifiability.
 
-## Learn More
+- [ ] **Replace every entry in `src/data/partners.ts`.** `PARTNERS` and
+      `INITIATIVES` are illustrative. Listing an organisation here asserts it
+      passed the checks described on `/partners` — only add real, verified orgs.
+- [ ] **Replace `SCALE`** (givers, organisations, total given, states) with
+      audited numbers. This is the section most likely to be quoted back at you.
+- [ ] **Add real logos** to `public/partners/<slug>.svg` and set `hasLogo: true`.
+      Until then a text wordmark renders, which looks intentional and is honest.
+- [ ] **Fill in `SOCIAL_LINKS`** in `src/lib/site.ts` — it becomes the
+      Organization schema's `sameAs`, which is how search engines tie the domain
+      to your verified profiles.
+- [ ] **Confirm the 95/5 split and ₹100 minimum** still match the product, then
+      check `NGO_SHARE_PCT` / `PLATFORM_FEE_PCT` in `src/lib/site.ts` and the FAQ
+      copy in `src/components/Faq.tsx`.
+- [ ] Set `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_APP_URL` in the host's env if
+      the domains ever differ from the defaults.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## How the SEO is set up
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Everything is static. `npm run build` must show `○ (Static)` for every route — if
+anything flips to `ƒ (Dynamic)`, a request-time API crept in and the page is no
+longer prerendered.
 
-## Deploy on Vercel
+| Concern | Where | Note |
+| --- | --- | --- |
+| Titles, descriptions, canonicals, OG/Twitter | `src/lib/seo.ts` → `pageMetadata()` | See the trap below |
+| Structured data (JSON-LD) | `src/lib/jsonld.ts` + `src/components/JsonLdScript.tsx` | Server-rendered, so crawlers that don't run JS still see it |
+| Social share card | `src/app/opengraph-image.tsx` | One card for the whole site, rendered at build |
+| `sitemap.xml` / `robots.txt` | `src/app/sitemap.ts` / `src/app/robots.ts` | Only canonical, indexable URLs belong in the sitemap |
+| Fonts | `src/app/layout.tsx` via `next/font/google` | Self-hosted at build, `display: swap`, size-adjust fallbacks → CLS 0 |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### The metadata trap worth knowing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Next **replaces** a page's `openGraph` and `twitter` objects rather than
+deep-merging them with the root layout's. A page declaring
+`openGraph: { title, description }` silently drops the root's `type`,
+`siteName` and `locale`; one declaring `twitter: { title }` drops `card` and the
+preview degrades to a small `summary` card. Nothing errors — the tags just go
+missing.
+
+That's why every page builds its social tags through `pageMetadata()` instead of
+writing `metadata` by hand. `og:image` is the one exception: the app-root
+`opengraph-image.tsx` file convention is merged in separately by Next.
+
+### Structured data emitted
+
+- Site-wide (`layout.tsx`): `Organization`, `WebSite`
+- Landing: `WebPage`, `Service`, `FAQPage` — the FAQ schema is generated from the
+  same `FAQS` array the visible `<details>` list renders, so markup and schema
+  can't drift apart
+- `/partners`: `WebPage`, `ItemList` of `NGO`, `ItemList` of `DonateAction`
+
+### Canonical split between the two domains
+
+`bekarna.in` (this site) and `bekarna.app` (the product) are separate
+properties. This site canonicalises only its own URLs and never claims the app's,
+so the two don't compete for the same keywords. CTAs link out with
+`rel="noopener"` and deliberately **not** `nofollow` — link equity should flow to
+the product.
+
+Search Console needs both domains registered separately.
+
+---
+
+## Zero client JavaScript
+
+There are no `"use client"` components. Consequences worth knowing:
+
+- The **logo marquee** is pure CSS (`.karna-marquee` in `globals.css`). The track
+  holds the list twice and translates exactly `-50%`, so the loop is seamless.
+  The duplicate is `aria-hidden`, so screen readers and crawlers read each
+  organisation once. It pauses on press and on `focus-within`.
+- **Page transitions** use the native `@view-transition` CSS rule — the brief's
+  horizontal slide with no JS. Browsers without support cut instantly, which is a
+  fine fallback. (Firefox support for cross-document view transitions is still
+  limited.)
+- The **FAQ** is native `<details>`, so collapsed answers are still in the HTML
+  and still indexed.
+- **Progress bars** are real `<progress>` elements, so the value is exposed to
+  assistive tech rather than implied by a coloured div.
+
+One honest caveat: even with zero client components, the App Router still ships
+~185 KB gzipped of React/Next runtime. Every script tag is `async` so nothing
+blocks render, and there's no hydration work beyond the shell — but if squeezing
+that baseline toward zero ever matters more than staying on Next, a static-first
+framework is the tool for that job. The brief specified Next 16, so this is a
+tradeoff, not a defect.
+
+---
+
+## Design language
+
+Mirrors the product app so the two domains read as one brand.
+
+- **Colours:** ink `#2B312D`, green `#58A870`, accent `#3FAE7E`, mint `#DCF2E7`.
+  Green is used sparingly — "green as spice", not green everywhere.
+- **Type:** Bricolage Grotesque (display) + Inter (body). **The brief specified
+  Fraunces**; Bricolage was chosen instead so bekarna.in and bekarna.app share a
+  typeface. Deliberate deviation.
+- **Tokens:** `t-display` / `t-h1` / `t-h2` / `t-h3` / `t-body` / `t-body-lg` /
+  `t-caption` / `t-label`, defined in `globals.css`.
+- **Interaction:** press states, never hover-only. Visible keyboard focus
+  everywhere. All motion respects `prefers-reduced-motion`.
+- **No stock-charity clichés** — no cupped hands, no sad-child imagery.
+  Credibility comes from specifics, not emotional pressure.
+- `cn()` in `src/lib/cn.ts` is a plain class **joiner, not tailwind-merge** —
+  later classes do *not* override earlier ones. Don't rely on override order.
+
+---
+
+## Off-page SEO (the part code can't do)
+
+On-page is as clean as it gets here, but ranking for competitive terms like
+"donate India" or "NGO donation" depends on backlinks and domain authority. The
+cheapest early win: **ask partner NGOs to link to bekarna.in from their own
+sites.** A handful of genuine links from .org domains in the sector is worth more
+than any further on-page tuning.
