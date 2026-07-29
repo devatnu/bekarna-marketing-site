@@ -25,9 +25,27 @@ plain static files, no Node server anywhere**. This is deliberate: a CDN has
 nothing to wake up, so the cold-start delay that affects container hosts cannot
 happen here by construction.
 
-**Deploy target: Cloudflare Pages.** Build command `npm run build`, output
-directory `out`. Set `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_APP_URL` as build
-env vars.
+**Deploy target: Cloudflare Workers static assets.** Build command
+`npm run build`, deploy command `npx wrangler deploy`. Set
+`NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_APP_URL` as build env vars.
+
+### `wrangler.jsonc` is load-bearing — do not delete it
+
+Without a committed wrangler config, `wrangler deploy` detects
+`Framework: Next.js`, assumes a server-rendered app, and auto-installs the
+**OpenNext** adapter. That then fails with:
+
+```
+ENOENT: .next/standalone/.next/server/pages-manifest.json
+```
+
+…because `output: "export"` never produces `.next/standalone`. The build itself
+succeeds; only the deploy dies, which makes it a confusing failure. `wrangler.jsonc`
+declares `assets.directory: "./out"` with **no `main`**, so nothing executes per
+request and the framework detection never runs.
+
+Wrangler requires **Node ≥ 22** (`engines` reflects this). Node 20 refuses to run
+it, so a local `npm run deploy` needs a 22.x on PATH.
 
 Chosen because the DNS for these domains is already on Cloudflare (no new vendor,
 custom domain is a click), its free tier permits commercial use with unlimited
@@ -47,8 +65,10 @@ the preview — silently, with no error anywhere. `public/_headers` declares
 `Content-Type: image/png` for it, and also sets immutable caching for hashed
 assets plus the security headers.
 
-That file uses Cloudflare Pages / Netlify syntax. **On any other host you must
-re-express those rules** in whatever form it accepts, or social previews break.
+Cloudflare honours `_headers` on Workers static assets as well as Pages — wrangler
+treats it as a config metafile and excludes it from the served output. **On any
+other host you must re-express those rules** in whatever form it accepts, or
+social previews break.
 
 ### What `output: "export"` gives up
 

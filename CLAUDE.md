@@ -23,6 +23,13 @@ objects. Writing `openGraph: { title }` on a page drops the root's `type`,
 to a small `summary` card — with no error. Always build page metadata through
 `pageMetadata()` in `src/lib/seo.ts`.
 
+## Never delete wrangler.jsonc
+It pins the deploy to **static assets** (`assets.directory: "./out"`, no `main`).
+Without it, `wrangler deploy` detects Next.js, auto-installs the OpenNext adapter,
+and dies on `ENOENT .next/standalone/.next/server/pages-manifest.json` — a file
+`output: "export"` never emits. The `next build` step succeeds either way, so the
+failure looks unrelated to the cause. Wrangler needs Node ≥ 22.
+
 ## Content is placeholder
 `PARTNERS`, `INITIATIVES` and `SCALE` in `src/data/partners.ts` are illustrative,
 not real. The `/partners` page makes verification claims, so listing an org there

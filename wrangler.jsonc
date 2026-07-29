@@ -1,0 +1,34 @@
+/**
+ * Cloudflare Workers config — static assets only.
+ *
+ * This file's presence is load-bearing. Without it, `wrangler deploy` detects
+ * "Framework: Next.js", assumes a server-rendered app, and auto-installs the
+ * OpenNext adapter — which then fails looking for
+ * `.next/standalone/.next/server/pages-manifest.json`, a file that
+ * `output: "export"` never produces. Pinning the config here stops that
+ * detection from ever running.
+ *
+ * There is deliberately **no `main`**: nothing executes on a request. Cloudflare
+ * just serves the prebuilt files in `out/` from its edge, which is what keeps
+ * this site free of cold starts.
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bekarna-marketing-site",
+  "compatibility_date": "2026-07-29",
+
+  "assets": {
+    // Produced by `npm run build` (next.config.ts sets output: "export").
+    "directory": "./out",
+
+    // Serve Next's exported out/404.html on a miss, rather than a bare
+    // Cloudflare error page. NOT "single-page-application" — that would rewrite
+    // every unknown path to index.html and hand crawlers a soft 200 for URLs
+    // that should honestly 404.
+    "not_found_handling": "404-page"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}
