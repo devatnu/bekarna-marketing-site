@@ -1,51 +1,52 @@
 import type { Metadata } from "next";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 
 /**
- * Builds a page's complete Metadata.
+ * Builds page metadata WITHOUT losing the root layout's Open Graph and Twitter
+ * settings.
  *
- * This helper exists because of a real Next.js metadata trap: `openGraph` and
- * `twitter` are **replaced** by a child page, not deep-merged with the root
- * layout's. A page that declares `openGraph: { title, description }` silently
- * loses the root's `type`, `siteName` and `locale`, and one declaring
- * `twitter: { title }` loses `card`, degrading the preview to a small `summary`
- * card. Both are easy to ship without noticing, since the tags simply go
- * missing rather than erroring.
+ * This exists because of a Next behaviour that fails silently: a page's
+ * `openGraph` / `twitter` objects REPLACE the root's rather than deep-merging
+ * with them. Writing `openGraph: { title }` on a page therefore drops `type`,
+ * `siteName` and `locale`; writing `twitter: { title }` drops `card`, and the
+ * link preview quietly degrades from a large image card to a small summary. No
+ * error, no warning.
  *
- * So: every page builds its social tags here, in full, from one call.
- * `og:image` is the exception — the app-root opengraph-image.tsx file
- * convention is merged in separately by Next and needs no wiring.
+ * So every page must go through here rather than declaring metadata by hand.
  */
 export function pageMetadata({
   title,
-  description,
+  description = SITE_DESCRIPTION,
   path,
+  index = true,
 }: {
-  /** Page title without the brand — the layout's template appends it. */
   title: string;
-  description: string;
-  /** Site-relative canonical path, e.g. "/" or "/partners". */
+  description?: string;
+  /** Route path, leading slash, e.g. "/privacy". */
   path: string;
+  /** Set false for pages that shouldn't be in search results. */
+  index?: boolean;
 }): Metadata {
-  const socialTitle = `${title} · ${SITE_NAME}`;
-
   return {
     title,
     description,
-    // Canonical per page, so no two URLs compete for the same content.
     alternates: { canonical: path },
     openGraph: {
+      // Re-stated, not inherited - see the note above.
       type: "website",
       siteName: SITE_NAME,
       locale: "en_IN",
-      url: new URL(path, SITE_URL).toString(),
-      title: socialTitle,
+      url: path,
+      title: `${title} · ${SITE_NAME}`,
       description,
     },
     twitter: {
       card: "summary_large_image",
-      title: socialTitle,
+      title: `${title} · ${SITE_NAME}`,
       description,
     },
+    robots: index
+      ? { index: true, follow: true }
+      : { index: false, follow: true },
   };
 }

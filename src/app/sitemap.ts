@@ -1,36 +1,31 @@
 import type { MetadataRoute } from "next";
+import { LEGAL_DOCS } from "@/data/legal";
 import { SITE_URL } from "@/lib/site";
 
-/** Required by `output: "export"` — emits sitemap.xml as a file at build time
- * rather than as a route handler. */
+/** Required under `output: "export"` - metadata routes are dynamic by default,
+ *  and a dynamic route can't be exported. Without this the build fails. */
 export const dynamic = "force-static";
 
 /**
- * sitemap.xml — generated at build time (no request-time APIs, so Next caches
- * it statically). Only canonical, indexable URLs belong here: listing a
- * non-canonical or noindex URL sends crawlers a contradictory signal.
- *
- * bekarna.app is deliberately absent — it's a separate property with its own
- * sitemap, and claiming its URLs here would split ranking between the domains.
+ * The homepage plus the legal pages, the latter derived from LEGAL_DOCS so a new
+ * document is never left out. A page missing from the sitemap is a page Google
+ * finds late.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  // Fixed date rather than new Date(): lastModified should reflect when the
-  // content actually changed, not when the build ran, or every deploy tells
-  // crawlers that every page is new.
-  const lastModified = new Date("2026-07-29");
+  const now = new Date();
 
   return [
     {
-      url: `${SITE_URL}/`,
-      lastModified,
+      url: SITE_URL,
+      lastModified: now,
       changeFrequency: "monthly",
       priority: 1,
     },
-    {
-      url: `${SITE_URL}/partners`,
-      lastModified,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
+    ...LEGAL_DOCS.map((doc) => ({
+      url: `${SITE_URL}/${doc.slug}`,
+      lastModified: now,
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    })),
   ];
 }
