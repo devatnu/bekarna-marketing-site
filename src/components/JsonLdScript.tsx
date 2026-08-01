@@ -1,26 +1,17 @@
-import type { JsonLd } from "@/lib/jsonld";
-
 /**
- * Renders one or more JSON-LD graphs into the document.
+ * Renders JSON-LD into the document.
  *
- * Deliberately a server component: structured data must be present in the
- * initial HTML, since crawlers that don't execute JavaScript would otherwise
- * never see it.
+ * A plain <script> tag rather than next/script: this has to be in the static HTML
+ * for crawlers that don't run JavaScript, which is the entire point of it.
+ * dangerouslySetInnerHTML is required because React escapes text children, and
+ * escaped JSON is invalid JSON-LD. The content is compiled from typed data in
+ * this repo, never from user input.
  */
-export function JsonLdScript({ schemas }: { schemas: JsonLd[] }) {
+export function JsonLdScript({ schema }: { schema: object }) {
   return (
-    <>
-      {schemas.map((schema, i) => (
-        <script
-          key={i}
-          type="application/ld+json"
-          // Serialised server-side from our own literals — no user input reaches
-          // this, and `<` is escaped so the JSON can't break out of the tag.
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(schema).replace(/</g, "\\u003c"),
-          }}
-        />
-      ))}
-    </>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
   );
 }

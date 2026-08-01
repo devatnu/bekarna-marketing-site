@@ -1,13 +1,10 @@
 # Static-host headers (Cloudflare Pages / Netlify syntax). Files in public/ are
 # copied verbatim into out/, so this lands at the deploy root automatically.
 
-# Next's static export writes the OG card as an EXTENSIONLESS file named
-# `opengraph-image`. A static host has nothing to infer a MIME type from and
-# serves it as application/octet-stream — at which point WhatsApp, X and
-# LinkedIn all refuse to render the preview, silently. Declare it explicitly.
-/opengraph-image
-  Content-Type: image/png
-  Cache-Control: public, max-age=3600
+# If an `opengraph-image` route is added back, it needs an explicit
+# `Content-Type: image/png` rule here: the static export writes it as an
+# EXTENSIONLESS file, a static host serves that as application/octet-stream, and
+# WhatsApp, X and LinkedIn all silently refuse to render the preview.
 
 # Content-hashed assets never change under the same name — cache them forever.
 /_next/static/*

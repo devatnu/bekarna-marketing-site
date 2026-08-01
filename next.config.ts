@@ -14,9 +14,8 @@ const nextConfig: NextConfig = {
 
   /**
    * next/image's optimiser needs a running server, which a static export has
-   * none of. Partner logos are SVGs — a format next/image never optimises
-   * anyway — so this costs nothing today. Raster logos should be exported at
-   * the right size before being committed.
+   * none of. Export raster images at the size they're displayed before
+   * committing them; nothing resizes them at request time.
    */
   images: { unoptimized: true },
 };
