@@ -1,10 +1,14 @@
 /** Single source of truth for names and URLs used across metadata and markup. */
 
 export const SITE_NAME = "Be Karna";
-export const SITE_URL = "https://bekarna.in";
 
-/** The product. Every call to action on this site points here - nowhere else. */
-export const APP_URL = "https://bekarna.app";
+/** This site, on the apex. www.bekarna.app 301s here, so the apex is canonical
+ *  and is what sitemap/robots/OG must advertise. */
+export const SITE_URL = "https://bekarna.app";
+
+/** The product, on the `my.` subdomain. Every call to action on this site
+ *  points here - nowhere else. */
+export const APP_URL = "https://my.bekarna.app";
 
 export const SITE_TAGLINE = "Give directly. See where it goes.";
 

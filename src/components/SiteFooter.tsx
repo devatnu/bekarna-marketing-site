@@ -62,7 +62,7 @@ const COLUMNS = [
 
 /**
  * The footer mixes three kinds of destination: same-page anchors, real routes,
- * and bekarna.app. Routes go through next/link; the other two must stay plain
+ * and my.bekarna.app. Routes go through next/link; the other two must stay plain
  * anchors, since Link would try to route "#faq" and an external URL.
  */
 function FooterLink({ href, children }: { href: string; children: string }) {

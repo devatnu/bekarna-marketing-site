@@ -2,8 +2,8 @@
 
 # Be Karna — marketing site
 
-Static marketing site for **bekarna.in**. Separate project from the product app
-(`~/karna_bharat`, which serves **bekarna.app**).
+Static marketing site for the apex **bekarna.app**. Separate project from the
+product app (`~/karna_bharat`, which serves **my.bekarna.app**).
 
 > **State: v3, built to Nishant's spoken spec (2026-08-01).** A single scrolling
 > homepage, in this order:
@@ -55,7 +55,7 @@ organisation receives it.
   money does, and a goal + raised amount in whole rupees.
 - **Tone: no urgency, no guilt.** No countdown timers, no "only 3 hours left",
   no distress imagery framed to pressure. Plain sentences.
-- **Every CTA goes to bekarna.app.** The site's only job is to send a convinced
+- **Every CTA goes to my.bekarna.app.** The site's only job is to send a convinced
   person to the app. One action per page.
 - **Any org or initiative content is placeholder until Nishant confirms it.**
   Naming an org on a page that claims verification asserts that org passed those
