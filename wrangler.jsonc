@@ -17,6 +17,17 @@
   "name": "bekarna-marketing-site",
   "compatibility_date": "2026-07-29",
 
+  // The site is reachable at its custom domain and nowhere else. The
+  // workers.dev URL is switched off deliberately: it would serve a second,
+  // fully crawlable copy of the site on a hostname we don't control the
+  // canonical of. Preview locally with `npx wrangler dev` instead.
+  "workers_dev": false,
+
+  // Declared here so the domain binding lives in the repo rather than only in
+  // the Cloudflare dashboard. `custom_domain` (not a plain route) makes
+  // Cloudflare own the DNS record for the hostname.
+  "routes": [{ "pattern": "bekarna.app", "custom_domain": true }],
+
   "assets": {
     // Produced by `npm run build` (next.config.ts sets output: "export").
     "directory": "./out",
