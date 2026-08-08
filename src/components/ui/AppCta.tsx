@@ -2,7 +2,7 @@ import { cn } from "@/lib/cn";
 import { APP_URL } from "@/lib/site";
 
 /**
- * The only call to action on this site. Every instance points at bekarna.app -
+ * The only call to action on this site. Every instance points at my.bekarna.app -
  * there is deliberately no second destination competing with it.
  *
  * Press states rather than hover: the active scale reads correctly on touch,

@@ -47,7 +47,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
 
           <p className="mt-12 text-small text-muted">
             <Link href="/" className="font-semibold text-green">
-              Back to bekarna.in
+              Back to bekarna.app
             </Link>
           </p>
         </div>

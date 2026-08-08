@@ -1,9 +1,9 @@
-# bekarna.in — marketing site
+# bekarna.app — marketing site
 
-Static marketing site for **Be Karna**, an Indian donation platform. The product
-itself lives in a separate repo (`~/karna_bharat`) and is served at
-**bekarna.app**; this site's only job is to explain Be Karna and send people
-there.
+Static marketing site for **Be Karna**, an Indian donation platform, served at
+the apex **bekarna.app**. The product itself lives in a separate repo
+(`~/karna_bharat`) and is served at **my.bekarna.app**; this site's only job
+is to explain Be Karna and send people there.
 
 ## Current state: blank canvas
 

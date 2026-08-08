@@ -26,7 +26,7 @@ import { Faq } from "@/components/sections/Faq";
  * Verification has to stay adjacent to TrustedNgos: section 3 claims these are
  * the most trusted organisations in India, and section 4 is the evidence.
  *
- * Two calls to action, both to bekarna.app: the hero's own button, and a small
+ * Two calls to action, both to my.bekarna.app: the hero's own button, and a small
  * one in the sticky header. There is deliberately NO fixed bottom bar - two
  * attempts at hiding it while the hero CTA was on screen both failed without
  * JavaScript (see the note in SiteHeader.tsx), so the header carries it instead.
