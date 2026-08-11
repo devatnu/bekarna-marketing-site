@@ -1,0 +1,64 @@
+name: Deploy
+
+# Builds and publishes the static export to Cloudflare Workers on every push to main.
+#
+# This exists because there was NO automated deploy. `npm run deploy` had to be run by
+# hand from a laptop, so merging a pull request changed the repository and nothing
+# else — the live site kept serving whatever was last pushed manually. That is how
+# bekarna.app went on showing "This document is not yet in force" for hours after the
+# legal documents were written, reviewed and merged.
+#
+# The app repo does not need this: render.yaml sets `autoDeploy: true`, so Render
+# rebuilds from main on its own.
+#
+# One-time setup — add two repository secrets under
+# Settings → Secrets and variables → Actions:
+#   CLOUDFLARE_API_TOKEN    a token with the "Edit Cloudflare Workers" template
+#   CLOUDFLARE_ACCOUNT_ID   from the Cloudflare dashboard URL
+#
+# Until those exist this workflow fails on the deploy step. The build step still runs,
+# so a broken build is caught either way.
+
+on:
+  push:
+    branches: ["main"]
+  # Deploy the current main by hand, e.g. to re-publish after a rollback.
+  workflow_dispatch:
+
+# One deploy at a time, and never cancel one midway: a half-published set of assets
+# is worse than a queued deploy.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Wrangler requires >= 22. Pinning it here rather than relying on the
+          # runner's default, which has moved before and will again.
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      # `output: "export"` in next.config.ts writes the static site to ./out, which is
+      # what wrangler.jsonc points its assets directory at.
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
