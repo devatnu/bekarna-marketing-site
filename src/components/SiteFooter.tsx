@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Wordmark } from "@/components/ui/Logo";
 import { LEGAL_LINKS } from "@/data/legal";
+import { CONTACT, ENTITY, TBC, officeOneLine } from "@/data/entity";
 import { APP_URL, SITE_NAME } from "@/lib/site";
 
 /**
@@ -115,7 +116,35 @@ export function SiteFooter() {
             </div>
           </nav>
 
-          <div className="mt-[clamp(3rem,8vw,5rem)] flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Operating entity, registered address and a reachable contact.
+              Payment gateways check for exactly this during their website review,
+              and a donor deciding whether to trust the site looks for it too. */}
+          <div className="mt-[clamp(3rem,8vw,5rem)] flex flex-col gap-3 border-t border-white/15 pt-6 text-small text-white/70">
+            <p>
+              {ENTITY.legalName}
+              {ENTITY.llpin !== TBC && <> · LLPIN {ENTITY.llpin}</>}
+              {ENTITY.gstin && <> · GSTIN {ENTITY.gstin}</>}
+            </p>
+            {!ENTITY.registeredOffice.includes(TBC) && (
+              <p>Registered office: {officeOneLine()}</p>
+            )}
+            {(CONTACT.supportEmail !== TBC || CONTACT.supportPhone !== TBC) && (
+              <p className="flex flex-wrap gap-x-4 gap-y-1">
+                {CONTACT.supportEmail !== TBC && (
+                  <a href={`mailto:${CONTACT.supportEmail}`} className="active:text-white">
+                    {CONTACT.supportEmail}
+                  </a>
+                )}
+                {CONTACT.supportPhone !== TBC && (
+                  <a href={`tel:${CONTACT.supportPhone}`} className="active:text-white">
+                    {CONTACT.supportPhone}
+                  </a>
+                )}
+              </p>
+            )}
+          </div>
+
+          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-small text-white/80">
               <p>
                 &copy; {new Date().getFullYear()} {SITE_NAME}
