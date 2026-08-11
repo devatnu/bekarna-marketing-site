@@ -8,18 +8,20 @@ import { NAV_LINKS } from "@/lib/site";
  *
  * The mobile menu is a native <details> - it opens and closes with no
  * JavaScript, which is what keeps this a pure static export with zero client
- * components. Known trade-off: tapping a link scrolls the page but leaves the
- * disclosure open, because nothing closes it without JS. Acceptable while the
- * nav is four anchors on one page; revisit if the nav ever grows real routes.
+ * components. Trade-off: on the home page, tapping a link scrolls but leaves the
+ * disclosure open, because nothing closes it without JS. From any other page the
+ * link is a real navigation, so the menu goes away with the page.
  */
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-line/70 bg-paper/85 backdrop-blur-md">
       <div className="t-container">
         <div className="flex min-h-[68px] items-center justify-between gap-4">
+          {/* "/" rather than "#top": from a legal page the fragment resolved
+              against that page and went nowhere. */}
           <a
-            href="#top"
-            aria-label="Be Karna - back to top"
+            href="/"
+            aria-label="Be Karna - home"
             className="flex shrink-0 items-center py-2"
           >
             <Wordmark priority />
