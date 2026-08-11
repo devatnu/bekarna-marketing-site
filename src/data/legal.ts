@@ -98,7 +98,7 @@ const PRIVACY: LegalDoc = {
         {
           type: "ul",
           items: [
-            "Identity and contact data — your name, mobile number, and email address where you give one. Your mobile number is the account identifier and is verified by one-time password.",
+            "Identity and contact data — your name, mobile number, and email address where you choose to give one. Your mobile number is the account identifier and is verified by one-time password. We do not email receipts; they are downloaded from the app.",
             "Profile data — your city, a profile photo where you upload one, and the causes you tell us you care about.",
             "Donation data — the amount, date, recipient organisation and campaign for each gift, and the resulting receipt.",
             "Payment metadata — the reference identifiers, status and method returned to us by our payment processor.",
@@ -150,7 +150,7 @@ const PRIVACY: LegalDoc = {
           items: [
             "The recipient organisation — your name and the amount, date and purpose of your gift, and your Permanent Account Number where you have given one. The organisation needs these for its own records and to issue you the statutory certificate of donation where section 80G applies. It is a separate Data Fiduciary in respect of what it receives.",
             "Our payment processor, Razorpay Software Private Limited, an RBI-authorised payment aggregator — the data necessary to take your payment and settle it to the organisation.",
-            "Our communications providers — your mobile number to send the one-time password, and your email address to send your receipt.",
+            "Our communications provider, to send the one-time password to your mobile number.",
             "Our hosting, storage and error-monitoring providers, who process data on our instructions under contract.",
             "Government authorities, courts and regulators, where we are required by law to disclose.",
             "A successor entity, in the event of a merger, reorganisation or transfer of the business, subject to the same protections.",
@@ -875,7 +875,7 @@ const DELIVERY: LegalDoc = {
           items: [
             "Confirmation on screen, immediately on successful payment.",
             "The donation recorded in your Giving Passport in the app, immediately.",
-            "Your Daan Receipt, available to download as a PDF or an image immediately after the payment settles, from the confirmation screen and from the transaction in your Giving Passport. Where you have given us your email address, we also send it there.",
+            "Your Daan Receipt, available to download immediately after the payment settles, from the confirmation screen and from the transaction in your Giving Passport. Receipts are not emailed — they are always available to download, so there is nothing to lose track of in an inbox.",
             "The statutory certificate of donation under section 80G, where the recipient organisation is registered — issued by that organisation, not by us, after it files its annual statement of donations with the Income Tax Department by 31 May following the financial year.",
           ],
         },
