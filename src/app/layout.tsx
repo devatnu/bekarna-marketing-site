@@ -3,7 +3,7 @@ import { Bricolage_Grotesque, Inter } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL, SITE_OG_IMAGE, SITE_OG_IMAGE_SIZE } from "@/lib/site";
 
 /**
  * Self-hosted at build time by next/font, with `display: swap` and generated
@@ -40,11 +40,19 @@ export const metadata: Metadata = {
     url: "/",
     title: `${SITE_NAME} - ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
+    images: [
+      {
+        url: SITE_OG_IMAGE,
+        ...SITE_OG_IMAGE_SIZE,
+        alt: `${SITE_NAME} - ${SITE_TAGLINE}`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} - ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
+    images: [SITE_OG_IMAGE],
   },
   robots: {
     index: true,
