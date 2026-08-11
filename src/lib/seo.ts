@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_OG_IMAGE, SITE_OG_IMAGE_SIZE } from "@/lib/site";
 
 /**
  * Builds page metadata WITHOUT losing the root layout's Open Graph and Twitter
@@ -39,11 +39,16 @@ export function pageMetadata({
       url: path,
       title: `${title} · ${SITE_NAME}`,
       description,
+      // Re-stated for the same reason as everything else here: a page-level
+      // openGraph object replaces the root's, so omitting this would strip the
+      // card from every legal page.
+      images: [{ url: SITE_OG_IMAGE, ...SITE_OG_IMAGE_SIZE, alt: SITE_NAME }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} · ${SITE_NAME}`,
       description,
+      images: [SITE_OG_IMAGE],
     },
     robots: index
       ? { index: true, follow: true }
