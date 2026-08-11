@@ -37,9 +37,9 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           # Wrangler requires >= 22. Pinning it here rather than relying on the
           # runner's default, which has moved before and will again.
