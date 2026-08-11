@@ -18,7 +18,7 @@ import { EFFECTIVE_DATE, ENTITY_COMPLETE, POLICY_VERSION, TBC } from "@/data/ent
  */
 export function LegalPage({ doc }: { doc: LegalDoc }) {
   return (
-    <main className="t-section bg-paper">
+    <main id="top" className="t-section bg-paper">
       <article className="t-container">
         <div className="mx-auto max-w-[46rem]">
           <p className="t-eyebrow text-green">Legal</p>

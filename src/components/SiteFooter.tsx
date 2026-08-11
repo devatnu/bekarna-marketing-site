@@ -27,24 +27,24 @@ const COLUMNS = [
   {
     heading: "Explore",
     links: [
-      { href: "#ngos", label: "Verified NGOs" },
-      { href: "#verification", label: "Verification" },
-      { href: "#initiatives", label: "Initiatives" },
+      { href: "/#ngos", label: "Verified NGOs" },
+      { href: "/#verification", label: "Verification" },
+      { href: "/#initiatives", label: "Initiatives" },
     ],
   },
   {
     heading: "Transparency",
     links: [
-      { href: "#passbook", label: "Passbook" },
-      { href: "#receipt", label: "Receipts" },
-      { href: "#security", label: "Security" },
+      { href: "/#passbook", label: "Passbook" },
+      { href: "/#receipt", label: "Receipts" },
+      { href: "/#security", label: "Security" },
     ],
   },
   {
     heading: "More",
     links: [
-      { href: "#gallery", label: "Gallery" },
-      { href: "#faq", label: "Questions" },
+      { href: "/#gallery", label: "Gallery" },
+      { href: "/#faq", label: "Questions" },
     ],
   },
   {
@@ -70,7 +70,10 @@ function FooterLink({ href, children }: { href: string; children: string }) {
   const className =
     "inline-flex min-h-[36px] items-center text-small text-white/85 active:text-white";
 
-  if (href.startsWith("/")) {
+  // Real routes go through next/link. Anything with a fragment stays a plain
+  // anchor: these are root-relative now ("/#faq"), and letting the router handle
+  // them would turn a same-page scroll into a route change.
+  if (href.startsWith("/") && !href.includes("#")) {
     return (
       <Link href={href} className={className}>
         {children}
@@ -149,7 +152,7 @@ export function SiteFooter() {
               <p>
                 &copy; {new Date().getFullYear()} {SITE_NAME}
               </p>
-              <a href="#security" className="active:text-white">
+              <a href="/#security" className="active:text-white">
                 Security
               </a>
               <p>Made in India.</p>

@@ -15,12 +15,20 @@ export const SITE_TAGLINE = "Give directly. See where it goes.";
 export const SITE_DESCRIPTION =
   "Give to verified NGOs and religious institutions across India. Your money goes straight to the initiative you chose, every rupee is on the ledger, and your 80G receipt is instant.";
 
-/** Section anchors - shared by the header nav and the sections themselves so
- *  the two can never drift apart. */
+/**
+ * Section anchors - shared by the header nav and the sections themselves so the two
+ * can never drift apart.
+ *
+ * Root-relative (`/#ngos`), NOT bare fragments (`#ngos`). A bare fragment resolves
+ * against whatever page you are already on, so from /terms these became /terms#ngos -
+ * a target that does not exist, so the click did nothing at all. The header and footer
+ * render on every page, including the seven legal ones, so their links have to name
+ * the page as well as the section.
+ */
 export const NAV_LINKS = [
-  { href: "#ngos", label: "NGOs" },
-  { href: "#verification", label: "Verification" },
-  { href: "#initiatives", label: "Initiatives" },
-  { href: "#passbook", label: "Passbook" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/#ngos", label: "NGOs" },
+  { href: "/#verification", label: "Verification" },
+  { href: "/#initiatives", label: "Initiatives" },
+  { href: "/#passbook", label: "Passbook" },
+  { href: "/#faq", label: "FAQ" },
 ] as const;
