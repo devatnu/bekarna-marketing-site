@@ -23,9 +23,9 @@ export const ENTITY = {
   /** Consumer-facing brand. */
   brandName: "Be Karna",
   /** LLP Identification Number. */
-  llpin: TBC,
+  llpin: "ADA-3675" as string,
   /** Permanent Account Number of the LLP. */
-  pan: TBC,
+  pan: "ABHFB3062F" as string,
   /** GSTIN, or null where the LLP is not yet registered. */
   gstin: null as string | null,
   /** Registered office, one line per entry, as on the certificate. */
