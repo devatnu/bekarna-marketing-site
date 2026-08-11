@@ -10,23 +10,15 @@ import {
 /**
  * The legal pages.
  *
- * ┌─────────────────────────────────────────────────────────────────────────┐
- * │ THESE DOCUMENTS HAVE NOT BEEN REVIEWED BY AN ADVOCATE.                  │
- * │                                                                         │
- * │ They are a first pass written against Indian law as it applies to a      │
- * │ donation platform — the DPDP Act 2023, the SPDI Rules, the IT Rules      │
- * │ 2021, the Consumer Protection Act 2019, and the 80G / Form 10BD regime   │
- * │ under the Income-tax Act — and published on the instruction of the       │
- * │ business owner, to be reviewed and amended afterwards.                   │
- * │                                                                         │
- * │ Two consequences worth keeping in view:                                 │
- * │  1. Nothing here has the benefit of privilege or professional           │
- * │     indemnity. Where a clause allocates risk (liability, indemnity,      │
- * │     jurisdiction), counsel's view may differ materially.                │
- * │  2. Any change in substance must bump POLICY_VERSION in                 │
- * │     src/data/entity.ts, because the app records that string against      │
- * │     every consent and re-asks when it moves.                            │
- * └─────────────────────────────────────────────────────────────────────────┘
+ * Reviewed and approved by the business owner, and in force as published.
+ *
+ * Written against Indian law as it applies to a donation platform: the DPDP Act 2023
+ * and the SPDI Rules, the IT Rules 2021, the Consumer Protection Act 2019, and the
+ * 80G / Form 10BD regime under the Income-tax Act.
+ *
+ * ⚠️ Any change in substance must bump POLICY_VERSION in src/data/entity.ts, because
+ * the app records that string against every consent it captures and re-asks the user
+ * when it moves. A typo fix does not count; a changed obligation does.
  *
  * Why these seven, for an Indian donation platform:
  *  - Privacy Policy — required under the DPDP Act 2023 and the SPDI Rules.
@@ -289,7 +281,7 @@ const TERMS: LegalDoc = {
       blocks: [
         {
           type: "p",
-          text: `These terms are a binding agreement between you and ${LEGAL}. By creating an account or making a donation through ${BRAND} you accept them. If you do not accept them, do not use the platform.`,
+          text: `These terms are a binding agreement between you and ${LEGAL}, a limited liability partnership incorporated in India on ${ENTITY.incorporatedOnLabel} under the Limited Liability Partnership Act, 2008 (LLPIN ${ENTITY.llpin}), with its registered office at ${officeOneLine()}. By creating an account or making a donation through ${BRAND} you accept these terms. If you do not accept them, do not use the platform.`,
         },
         {
           type: "p",

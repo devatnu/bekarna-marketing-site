@@ -27,24 +27,30 @@ export const ENTITY = {
   /** Permanent Account Number of the LLP. */
   pan: "ABHFB3062F" as string,
   /** GSTIN, or null where the LLP is not yet registered. */
-  gstin: null as string | null,
+  gstin: null as string | null, // not registered / not yet supplied
   /** Registered office, one line per entry, as on the certificate. */
-  registeredOffice: [TBC],
+  registeredOffice: [
+    "House No 39, Palak Vihar, Society Road",
+    "Maharajpur, Adhartal",
+    "Jabalpur, Madhya Pradesh - 482004",
+  ] as string[],
   /** City whose courts have jurisdiction — normally the registered office. */
-  jurisdictionCity: TBC,
-  /** Date of incorporation, for the terms. */
-  incorporatedOn: TBC,
+  jurisdictionCity: "Jabalpur" as string,
+  /** Date of incorporation, ISO. Certificate dated 21 July 2026. */
+  incorporatedOn: "2026-07-21" as string,
+  /** Same date, for prose. */
+  incorporatedOnLabel: "21 July 2026" as string,
 } as const;
 
 export const CONTACT = {
   /** Monitored inbox. Gateways will not accept a contact form alone. */
-  supportEmail: TBC,
+  supportEmail: "support@bekarna.app" as string,
   /** Working telephone number. */
-  supportPhone: TBC,
+  supportPhone: "+91 75086 31919" as string,
   /** Where an NGO or institution applies to be listed. */
-  partnersEmail: TBC,
+  partnersEmail: "support@bekarna.app" as string,
   /** Privacy and data-protection queries. */
-  privacyEmail: TBC,
+  privacyEmail: "support@bekarna.app" as string,
 } as const;
 
 /**
@@ -56,11 +62,15 @@ export const CONTACT = {
  * acknowledge a complaint within 24 hours and resolve it within 15 days.
  */
 export const GRIEVANCE_OFFICER = {
-  name: TBC,
-  designation: TBC,
-  email: TBC,
-  phone: TBC,
-  address: [TBC],
+  name: "Pranav Dixit" as string,
+  designation: "Co-Founder & CFO" as string,
+  email: "pranav@bekarna.app" as string,
+  phone: "+91 94246 48894" as string,
+  address: [
+    "House No 39, Palak Vihar, Society Road",
+    "Maharajpur, Adhartal",
+    "Jabalpur, Madhya Pradesh - 482004",
+  ] as string[],
 } as const;
 
 /**
