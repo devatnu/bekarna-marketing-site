@@ -25,7 +25,15 @@ export interface Stat {
 export const STATS: Stat[] = [
   { value: "₹4.2 Cr", label: "Given through Be Karna", note: "since launch" },
   { value: "180+", label: "Verified organisations", note: "across 14 states" },
-  { value: "95%", label: "Reaches the organisation", note: "the rest covers payment fees" },
+  // Not a flat 95%: the 5% Be Karna Initiatives contribution is included by default
+  // and can be declined at payment, so a declined gift delivers the whole amount.
+  // And it does not "cover payment fees" — see the FAQ answer below and the app's
+  // InitiativesSheet, which are the authoritative description of what it covers.
+  {
+    value: "At least 95%",
+    label: "Reaches the organisation",
+    note: "100% if you decline the optional 5%",
+  },
 ];
 
 export interface Partner {
@@ -285,16 +293,25 @@ export interface FaqItem {
 /**
  * The FAQ, and the source for the FAQPage JSON-LD.
  *
- * ⚠️ FOUR ANSWERS BELOW ARE UNCONFIRMED - every one marked `unverified`. They
- * state a fee, a refund policy, a settlement window and a payment stack that
- * nobody has given me. Structured data makes these eligible for search results,
- * so a wrong answer here is published twice over. Fix or delete each one before
- * launch.
+ * ⚠️ THREE ANSWERS BELOW ARE UNCONFIRMED - every one marked `unverified`. They
+ * state a refund policy, a settlement window and a payment stack that nobody has
+ * given me. Structured data makes these eligible for search results, so a wrong
+ * answer here is published twice over. Fix or delete each one before launch.
+ *
+ * Two answers were corrected on 12 Aug 2026 and are no longer guesses:
+ *   - "What does Be Karna deduct?" now matches the app's FAQ, its InitiativesSheet
+ *     and clause 335 of the terms. It previously said the 5% "covers payment
+ *     gateway charges", which is not what it covers.
+ *   - "Is my donation tax-deductible?" previously asserted that EVERY organisation
+ *     holds a valid 80G registration. That is false — many religious institutions
+ *     are not registered, which is why the app states eligibility per organisation
+ *     — and it was published in FAQPage structured data. It also promised a receipt
+ *     by email; email was dropped, receipts are downloaded.
  */
 export const FAQ: FaqItem[] = [
   {
     q: "Is my donation tax-deductible?",
-    a: "Yes. Every organisation on Be Karna holds a valid 80G registration, which we confirm directly rather than taking on trust. Your receipt reaches you as soon as the payment settles, so there is nothing to request and nobody to chase in March.",
+    a: "It depends on the organisation. Donations to organisations registered under section 80G are eligible for a deduction; many temples, mosques, churches and gurudwaras are not registered, and the plan page says so before you give. The statutory certificate is Form 10BE, issued by the organisation itself after it files its annual statement of donations with the Income Tax Department. Your Daan Receipt is available to download the moment the payment settles.",
   },
   {
     q: "How do I know the money actually reached the organisation?",
@@ -314,8 +331,7 @@ export const FAQ: FaqItem[] = [
   },
   {
     q: "What does Be Karna deduct?",
-    a: "95% of what you give reaches the organisation. The remainder covers payment gateway charges.",
-    unverified: true,
+    a: "Organisations are never charged - they pay nothing to be listed and nothing to receive funds. A 5% contribution to Be Karna Initiatives is included by default on each gift; it covers verifying every organisation, running the platform, and Be Karna's own giving programmes. You can decline it at payment, and if you do the organisation receives 100% of what you gave. Be Karna Innovations LLP is a technology platform, not a charity, so that 5% is not itself eligible for a deduction under section 80G.",
   },
   {
     q: "How long does a transfer take to settle?",
