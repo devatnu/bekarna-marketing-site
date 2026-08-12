@@ -332,7 +332,7 @@ const TERMS: LegalDoc = {
       blocks: [
         {
           type: "p",
-          text: `Of every donation, ${LEGAL} retains 5%, described on the payment screen as "Be Karna Initiatives". The remaining 95% is settled to the recipient organisation. You may decline the 5% at the time of payment, by ticking the option shown; if you do, the whole of your donation is settled to the organisation and we retain nothing.`,
+          text: `Of every donation, ${LEGAL} retains 5%, described on the payment screen as "Be Karna Initiatives". That 5% is inclusive of any goods and services tax that applies to it — nothing is added to the amount you enter, and the figure shown before you pay is the figure charged. The remaining 95% is settled to the recipient organisation. You may decline the 5% at the time of payment, by ticking the option shown; if you do, the whole of your donation is settled to the organisation and we retain nothing.`,
         },
         {
           type: "p",
