@@ -2,8 +2,12 @@
 
 export const SITE_NAME = "Be Karna";
 
-/** This site, on the apex. www.bekarna.app 301s here, so the apex is canonical
- *  and is what sitemap/robots/OG must advertise. */
+/** This site, on the apex.
+ *
+ *  www.bekarna.app does NOT redirect here — it is a second Worker custom domain
+ *  serving the same site (see wrangler.jsonc). The `rel="canonical"` this constant
+ *  feeds is what consolidates the two hostnames for search engines, which is why
+ *  sitemap/robots/OG must all advertise the apex and never the www form. */
 export const SITE_URL = "https://bekarna.app";
 
 /**
