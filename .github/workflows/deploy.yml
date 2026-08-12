@@ -62,3 +62,32 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # A green `wrangler deploy` does not mean the site is reachable. It exited 0
+      # on 2026-08-11 while taking www.bekarna.app off DNS entirely, and nothing
+      # noticed until someone opened the link the next morning. Check every hostname
+      # wrangler.jsonc claims to serve, so a broken binding fails the run instead of
+      # sitting silently in production.
+      - name: Verify every hostname serves
+        run: |
+          attempts=5
+          failed=0
+          for host in bekarna.app www.bekarna.app; do
+            # Retry: a freshly created custom domain needs a moment to propagate,
+            # and resolvers may still be holding a negative cache entry from before
+            # it existed. curl reports 000 itself when it cannot resolve or connect.
+            for attempt in $(seq $attempts); do
+              code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 "https://$host/" || true)
+              [ "$code" = "200" ] && break
+              [ "$attempt" = "$attempts" ] && break
+              echo "  $host -> ${code:-000} (attempt $attempt/$attempts), retrying in 15s"
+              sleep 15
+            done
+            if [ "$code" = "200" ]; then
+              echo "✓ $host -> 200"
+            else
+              echo "✗ $host -> ${code:-000}"
+              failed=1
+            fi
+          done
+          exit $failed
