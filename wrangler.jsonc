@@ -26,7 +26,23 @@
   // Declared here so the domain binding lives in the repo rather than only in
   // the Cloudflare dashboard. `custom_domain` (not a plain route) makes
   // Cloudflare own the DNS record for the hostname.
-  "routes": [{ "pattern": "bekarna.app", "custom_domain": true }],
+  //
+  // BOTH hostnames must be listed. wrangler treats this array as the authoritative
+  // set of domains for the Worker, so a hostname attached only in the dashboard is
+  // not safe across deploys — and because `custom_domain` owns the DNS record,
+  // losing the binding takes the record with it.
+  //
+  // www.bekarna.app was dashboard-only and went NXDOMAIN on 2026-08-11, the night
+  // the push-to-main deploy landed, while the apex (declared here) was unaffected.
+  // Whether that deploy actively removed it was never confirmed against Cloudflare's
+  // side — but the asymmetry is the point: what is declared here survives.
+  //
+  // www is not a redirect. It serves the same site, and the rel="canonical" on the
+  // apex does the SEO consolidation — see src/lib/site.ts.
+  "routes": [
+    { "pattern": "bekarna.app", "custom_domain": true },
+    { "pattern": "www.bekarna.app", "custom_domain": true }
+  ],
 
   "assets": {
     // Produced by `npm run build` (next.config.ts sets output: "export").
